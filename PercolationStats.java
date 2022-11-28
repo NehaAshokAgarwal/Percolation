@@ -9,36 +9,22 @@ public class PercolationStats {
 
     // Performs m independent experiments on an n x n percolation system.
     public PercolationStats(int n, int m) {
-        // Throw an error IllegalArgumentException if n and m is less than or
-        // equals to zero.
         if (n <= 0 || m <= 0) {
             throw new IllegalArgumentException("Illegal n or m");
         }
         this.m = m; // Initialise this.m = m
-        this.x = new double[m]; // Initialise this.x to an array of size m.
-        // Repeating the following experiment m times to calculate the percolation
-        // threshold m number of times for the greater efficiency.
+        this.x = new double[m]; 
         for (int k = 0; k <= m - 1; k++) {
-            // Calling the constructor to create an object 'system' of union find
-            // datatype which represents the percolation system.
             UFPercolation system = new UFPercolation(n);
-            // number of open sites is set as 0.
             int open = 0;
-            // until the system does not percolate.
             while (!system.percolates()) {
-                // select a random row in the system.
                 int i = StdRandom.uniform(0, n);
-                // select a random column in the system.
                 int j = StdRandom.uniform(0, n);
-                // if the above selected site is not open, then open it and
-                // increment the number of sites(open) by 1.
                 if (!system.isOpen(i, j)) {
                     system.open(i, j);
                     open++;
                 }
             }
-            // Calculate the Percolation threshold which is the number of sites open
-            /// divided by the total number of sites in the system.
             double threshold = (double) open / (double) (n * n);
             // store the calculated threshold value in the one dimensional array x.
             x[k] = threshold;
