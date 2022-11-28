@@ -1,0 +1,169 @@
+1. Enter the number of hours it took you to complete the project between
+   the <<< and >>> signs below (eg, <<<10>>>).
+
+   <<< 20 >>>
+   
+2. Enter the difficulty level (1: very easy; 5: very difficult) of the project
+   between <<< and >>> signs below (eg, <<<3>>>).
+
+   <<< 4 >>>
+
+3. Provide a short description of how you approached each problem, issues you 
+   encountered, and how you resolved those issues.
+
+   Problem 1 (Array Percolation)
+       Approach: The purpose of the problem is to check if the system
+       percolates or not.
+       1) Instance Variables - For this, I first defined the instance variables.
+       n (size of the system), a system (2D array of booleans and by default the
+       value of each site would be false(blocked)), and openSites - to keep
+       track of the number of open sites in the system.
+       2) ArrayPercolation - In this, I initialised all the instance variables.
+       The size of the system this.n to n. Also, for this I handled an error that
+       if the value of n is less than 0 or equals 0, then throw
+       IllegalArgumentException error because it would be impossible to create a
+       system then. Then, Initialised system's size to be (n by n) and initialised
+        openSites to 0.
+       3) open method - In the open method, I first handled the corner case. That
+       is if the sites is not inside the grid then return. However, if not then
+       check if the site(i, j) is open or not. If the site is not open,
+       then open the site and increment the count of openSites by one.
+       4) isOpen method - This method returns true if the site is open or else false.
+       For this, I again handled the corner case first, that is if the site is not
+       inside the system then return . However, if not then simply return the count
+       of the open sites by returning openSites at the end.
+       5) floodFill - Then I coded for the floodFill.
+       The floodFill does the in depth-exploration search to check if the site
+       is full or not. In order to do the exploration, the method calls itself
+       recursively on the site's neighbours(North, south, east. and west directions).
+       However, to make sure that the method don't turn into an infinite loop,
+       it needs a base case. So this method has the base case first where it checks if the site
+       is out of bounds or if the site is not open or if the site is already full,
+       then the function returns. But, if not then it fills the site and checks
+       its neighbours as well, i.e. North, South, East and, West sites.
+       6) isFull method - This method returns true if the site is full or not.
+       A site is full if it is open and if it's one of the neighbours are also open and full.
+       Thus, for this it calls the floodFill method on every site in  the system's
+       first row by using the for loop.
+       7) Percolation method - Lastly we return if the system percolates or not.
+       A system percolates if it has an at least one site open and full in its last row.
+       Thus, in this method we iterate over the last row using the for loop,
+       to check if it has any open and a full site or not. If it does, then we return true,
+       else we return false.
+
+   Issues and resolution: In this problem, I had issues with the isFull, and
+   floodFill method.  In the floodFill, I was using an && operator in the base
+   case instead of using || operator. This was pointed out by T.A. Richard.
+   In the isFull method, I was using the 'j' parameter as the loop variable also.
+   This was giving the ArrayIndexOutOfBounds exception. As The loop terminates
+   with j = n, and the value that returned is full[i][n] instead of full[i][j].
+   It was resolved by T.A. Richard and Prof. Swami.
+
+   Problem 2 (Union Find Percolation)
+       Approach: The purpose of this problem is to check if the system percolates
+       or not using the WeightedQuickUnionUF data type.
+       1) Instance variables - Defined instance variable first -
+       Percolation system size(n) which represents the size of the system,
+       Percolation system(open), Number of open sites which counts the number of
+       open sites in the system(openSites), and WeightedQuickUnionUf object(uf)
+       which represents the union-find representation of the system.
+       2) encode method - Then I coded encode which basically represents the UF site
+       corresponding to the percolation system site (i, j). To calculate it,
+       I used the index to row major order. However, I added 1 to the end so that
+       the sites start from 1 and end at n*n+1, so that it could incorporate the
+       idea of the virtual sites(source and sink) to compute the percolation of
+       the system.
+       3)UFPercolation - I initialised the instance variable here.
+       Initialised this.n = n. For this I also handled an error that if the
+       value of n is less than 0 or equals 0, then throw  IllegalArgumentException
+       error because it would be impossible to create a system then. Initialised
+       the openSites to 0 which tracks the number of open sites in the system.
+       Initialise uf to (n*n+2) which represents the union find object of the system
+       and is connected to the both source and sink. Initialised object to (n*n+1)
+       which is again a UF representation of the system and is connected just
+       to the source.
+       4)open method - I handled the corner case first by Throwing an
+       IndexOutOfBoundsException error if i or j is outside the interval [0, n−1].
+       The open method does two things. Firstly it connects the
+       site (i, j) to source in uf only if i = 0 or i = (n-1) i.e. the first
+       and last row of the system using the encode method. Also, to resolve the
+       backwash problem, I created an object of UF type completely identical to
+       the uf, but just not connected to the sink. Therefore, I connected
+       site (i, j) to source in object only if i = 0(the first row of the system.)
+       using encode. Second, it checks that if the site is open or not in the system.
+       If it is not then, it opens it and increment the openSites by one.
+       Moreover, it checks the neighbours of the site as well and if they are
+       found open then it connects the site with its neighbours using the union method.
+       5)isOPen method - It simply returns true if the site(i,j) is open or else
+       false if it is not.
+       6) numberOfOpenSites method - It simply returns the number of sites open
+       in the system with the help of the openSites method.
+       7) isFull method - I tried to handle the corner case first by Throwing an
+       IndexOutOfBoundsException error if i or j is outside the interval [0, n−1].
+       This is the function which gets little tricky, because here
+       we have to return those sites which are open and are just connected to the
+       source. While doing this method, I got an idea to resolve my backwash
+       error. So for this, I created an UF object, completely identical to the uf.
+       The only difference between the object is that object is just connected to
+       the source while uf is connected to both source and sink.So the isFull
+       method returns true if the site of the object (i,j) is
+       connected to the source and is open or else return false. This way I was
+       able to return the full site in the method.
+       8) percolates method - This method simply returns true if source
+       is connected to the sink otherwise, it returns false. It checks this by
+       using the connected method from the QuickWeighUnionUF data type.
+
+   Issues and resolution: The issue I had with this, I was writing my condition
+   in the open method like this - (open[i+1][j] && (i+1 <= n-1) for all the
+   for all the if statements where I am connecting the site to its
+   neighbours if they are open. This was giving me the error saying that
+   ArrayIndexOutOfBounds. It was resolved by prof. Swami as he asked me to write
+   it as (i + 1 <= n - 1 && open[i + 1][j]) as my conditions are evaluated from
+   left to right.
+   Another issue I had was that i was using for loop in the open method to
+   connect my site(i, j) to the source and sink and also i was using the
+   condition(open[i][j]) instead of (!open[i][j]). This was also resolved by
+   professor swami.
+   For the backwash problem, I was first trying to resolve it in the percolation
+   method itself. However, because I was stuck in the full method and percolation ,
+   I tried to join the issue and that is how I tried to resolve the backwash by
+   creating a Union - find object - object identical tp uf.
+
+  Problem 3 (Estimation of Percolation Threshold)
+       Approach: The purpose of this problem is to calculate the percolation
+       threshold.
+       1) PercolationStats  - In this I defined my instance variables.
+       'm' which represents the number of independent experiments, and x which
+       is one-dimensional array which stores the values of m number of
+       calculated threshold values.
+       2) PercolationStats method - First, I tried to handle the corner case by
+       throwing an error IllegalArgumentException if n and m is less than or
+       equals to zero. Then initialised this.n to n and x to be the array of size m.
+       Then I used a for loop to calculate the value of threshold percolation
+       m times. Inside the for loop, I created an object 'system' of
+      union find datatype, which represents the percolation system. Then
+      using the stdrandom library, I selected a random site (i,j) until the system
+      percolates. Once the system percolates, I checked the site selected above
+      if it is open or not. If it is not open then I make it open and increment the
+       number of open sites by one. The fraction of sites that are open when the
+      system percolates provides an estimation of the percolation threshold
+      and store teh value in x. Then repeated the process till m times.
+      3) mean() method - Returns sample mean of percolation threshold
+      4) stddev() method - Returns sample standard deviation of percolation threshold.
+      5) confidenceLow() method - Returns low endpoint of the 95% confidence interval.
+      6) confidenceHigh() method - Returns high endpoint of the 95% confidence interval
+  Issues and resolution: I had no issues with this problem.
+
+4. Did you receive help from anyone? List their names, status (classmate, 
+   CS210 grad, TA, other), and the nature of help received.
+
+   Name               Status       Help Received
+   Richard Anarfi     TA           Problem 1, and Euclidean distance.
+
+   Swami Iyer        Professor    Problem 1 and Problem 2
+
+5. List any other comments here. Feel free to provide any feedback on how
+   much you learned from doing the assignment, and whether you enjoyed
+   doing it.
+
+  It is a little challenging project, but I learned a lot from it.
